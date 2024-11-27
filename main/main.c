@@ -10,6 +10,8 @@
 #include "wifi_sta.h"
 #include "nvs_flash.h"
 #include "mbtcp_slave.h"
+#include "ftp.h"
+#include "spi_sdcard.h"
 
 void app_main(void)
 {
@@ -21,13 +23,15 @@ void app_main(void)
     ESP_ERROR_CHECK(ret);
 
     letter_console_init();
-    led_init();
-    key_init();
-    rtu_slave_init();
+    // led_init();
+    // key_init();
+    // rtu_slave_init();
     // timer_init();
-    pwm_init();
+    // pwm_init();
     wifi_init_sta();
+    spi_sdcard_init();
     mbtcp_slave_start();
+    ftp_init(4096, 5);
 
     while (1) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);

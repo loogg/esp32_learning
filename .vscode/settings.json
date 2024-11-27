@@ -11,10 +11,10 @@
     "idf.openOcdConfigs": [
         "board/esp32s3-builtin.cfg"
     ],
-    "idf.portWin": "COM16",
+    "idf.portWin": "COM15",
     "idf.pythonBinPathWin": "D:/Espressif/python_env/idf5.3_py3.11_env/Scripts/python.exe",
     "idf.toolsPathWin": "D:\\Espressif",
-    "idf.flashType": "JTAG",
+    "idf.flashType": "UART",
     "files.associations": {
         "esp_task.h": "c",
         "led.h": "c",
@@ -57,7 +57,18 @@
         "utility": "c",
         "variant": "c",
         "chrono": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "unistd.h": "c",
+        "stdint.h": "c",
+        "stdbool.h": "c",
+        "esp_err.h": "c",
+        "esp_attr.h": "c",
+        "esp_bit_defs.h": "c",
+        "esp_idf_version.h": "c",
+        "ftp_session.h": "c",
+        "sd_pwr_ctrl_by_on_chip_ldo.h": "c",
+        "sdmmc_cmd.h": "c",
+        "spi_sdcard.h": "c"
     },
     "commentTranslate.source": "Bing",
     "C_Cpp.clang_format_style": "{BasedOnStyle: Google,UseTab: Never, IndentWidth: 4, TabWidth: 4, SortIncludes: false, AlignConsecutiveMacros : true,ColumnLimit: 150}"
