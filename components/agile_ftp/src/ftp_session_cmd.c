@@ -725,8 +725,13 @@ static int stor_cmd_receive(int socket, uint8_t *buf, int bufsz, int timeout)
 
 
         rc = recv(socket, buf + len, bufsz, MSG_DONTWAIT);
-        if(rc <= 0) {
-            rc = 0;
+        if (rc <= 0) {
+            if (rc < 0) {
+                if (errno == ENOTCONN) {
+                    rc = 0;
+                }
+            }
+
             break;
         }
 

@@ -11,7 +11,7 @@
     "idf.openOcdConfigs": [
         "board/esp32s3-builtin.cfg"
     ],
-    "idf.portWin": "COM15",
+    "idf.portWin": "COM4",
     "idf.pythonBinPathWin": "D:/Espressif/python_env/idf5.3_py3.11_env/Scripts/python.exe",
     "idf.toolsPathWin": "D:\\Espressif",
     "idf.flashType": "UART",
