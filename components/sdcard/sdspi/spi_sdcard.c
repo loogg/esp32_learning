@@ -20,7 +20,7 @@
 
 #define EXAMPLE_MAX_CHAR_SIZE    64
 
-static const char *TAG = "example";
+static const char *TAG = "sdspi";
 
 #define MOUNT_POINT "/sdcard"
 

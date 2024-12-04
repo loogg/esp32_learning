@@ -11,7 +11,7 @@
 #include "nvs_flash.h"
 #include "mbtcp_slave.h"
 #include "ftp.h"
-#include "spi_sdcard.h"
+#include "sdcard.h"
 
 void app_main(void)
 {
@@ -29,7 +29,7 @@ void app_main(void)
     // timer_init();
     // pwm_init();
     wifi_init_sta();
-    spi_sdcard_init();
+    sdcard_init();
     mbtcp_slave_start();
     ftp_init(4096, 5);
 
