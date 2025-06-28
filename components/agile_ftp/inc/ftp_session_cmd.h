@@ -3,6 +3,10 @@
 
 #include "ftp_session.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct ftp_session_cmd
 {
     char *cmd;
@@ -10,5 +14,9 @@ struct ftp_session_cmd
 };
 
 int ftp_session_cmd_process(struct ftp_session *session, char *cmd, char *cmd_param);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

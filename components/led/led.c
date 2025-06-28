@@ -2,7 +2,7 @@
 #include "driver/gpio.h"
 #include <esp_task.h>
 
-#define LED_PIN 48
+#define LED_PIN 1
 
 static void led_task(void *param)
 {
@@ -17,7 +17,7 @@ static void led_task(void *param)
 int led_init(void)
 {
     gpio_config_t led_config = {
-        .pin_bit_mask = 1ULL << LED_PIN,
+        .pin_bit_mask = BIT64(LED_PIN),
         .mode = GPIO_MODE_OUTPUT,
         .pull_up_en = GPIO_PULLUP_DISABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,

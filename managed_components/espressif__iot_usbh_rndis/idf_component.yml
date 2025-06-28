@@ -1,0 +1,22 @@
+dependencies:
+  cmake_utilities: '*'
+  espressif/iot_eth:
+    public: true
+    version: '*'
+  espressif/iot_usbh_cdc:
+    public: true
+    version: 2.*
+  idf: '>=4.4'
+description: USB Host ETH RNDIS Driver
+documentation: https://docs.espressif.com/projects/esp-iot-solution/en/latest/usb/usb_host/usb_rndis.html
+issues: https://github.com/espressif/esp-iot-solution/issues
+repository: git://github.com/espressif/esp-iot-solution.git
+repository_info:
+  commit_sha: 99d6826da8a47de2973c2a4db8d67afbde5af17e
+  path: components/usb/iot_usbh_rndis
+targets:
+- esp32s2
+- esp32s3
+- esp32p4
+url: https://github.com/espressif/esp-iot-solution
+version: 0.2.0

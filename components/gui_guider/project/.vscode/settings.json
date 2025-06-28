@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "lv_conf_internal.h": "c",
+        "home_screen.h": "c",
+        "lv_obj.h": "c",
+        "lvgl.h": "c"
+    }
+}

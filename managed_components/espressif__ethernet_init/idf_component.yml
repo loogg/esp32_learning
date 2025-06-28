@@ -1,0 +1,14 @@
+dependencies:
+  espressif/ch390:
+    version: '*'
+  espressif/enc28j60:
+    version: '*'
+  espressif/lan867x:
+    rules:
+    - if: target in [esp32, esp32p4]
+  idf:
+    version: '>=5.3'
+description: This component initializes Ethernet driver based on Espressif IoT Development
+  Framework Configuration.
+url: https://github.com/espressif/esp-eth-drivers/tree/master/ethernet_init
+version: 0.3.3

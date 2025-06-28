@@ -1,5 +1,48 @@
 menu "Example Configuration"
 
+    choice "USB Adapter"
+        prompt "Select USB Adapter"
+        default USB_ADAPTER_CHERRYUSB
 
+        config USB_ADAPTER_CHERRYUSB
+            bool "CherryUSB"
+            help
+                Select CherryUSB USB Adapter.
+
+        config USB_ADAPTER_IDF_USB
+            bool "ESP-IDF USB"
+            help
+                Select ESP-IDF USB Adapter.
+    endchoice
+
+    choice "Console Adapter"
+        prompt "Select Console Adapter"
+        default CONSOLE_ADAPTER_LETTER_SHELL
+
+        config CONSOLE_ADAPTER_LETTER_SHELL
+            bool "Letter Shell"
+            help
+                Select Letter Shell Console Adapter.
+
+        config CONSOLE_ADAPTER_ESP_CONSOLE
+            bool "ESP Console"
+            help
+                Select ESP Console Adapter.
+    endchoice
+
+    choice "font ttf type"
+        prompt "Select font ttf type"
+        default FONT_TTF_USING_TINYTTF
+
+        config FONT_TTF_USING_TINYTTF
+            bool "tinyttf"
+            help
+                Select tinyttf font type.
+
+        config FONT_TTF_USING_FREETYPE
+            bool "FreeType"
+            help
+                Select FreeType font type.
+    endchoice
 
 endmenu

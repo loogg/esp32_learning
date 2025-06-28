@@ -3,6 +3,14 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int led_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

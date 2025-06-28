@@ -1,0 +1,11 @@
+menu "IIC DEV Configuration"
+
+    config IIC_DEV_PIN_SCL
+        int "IIC SCL Pin"
+        default 42
+
+    config IIC_DEV_PIN_SDA
+        int "IIC SDA Pin"
+        default 41
+
+endmenu

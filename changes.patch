@@ -1,0 +1,42 @@
+diff --git a/components/esp_lcd/spi/esp_lcd_panel_io_spi.c b/components/esp_lcd/spi/esp_lcd_panel_io_spi.c
+index c1b9bde53d..1ee4dcd4ce 100644
+--- a/components/esp_lcd/spi/esp_lcd_panel_io_spi.c
++++ b/components/esp_lcd/spi/esp_lcd_panel_io_spi.c
+@@ -50,6 +50,7 @@ typedef struct {
+     size_t num_trans_inflight;  // Number of transactions that are undergoing (the descriptor not recycled yet)
+     int lcd_cmd_bits;          // Bit width of LCD command
+     int lcd_param_bits;        // Bit width of LCD parameter
++    bool sync_trans; // Whether the transaction is synchronous or not
+     struct {
+         unsigned int dc_cmd_level: 1;    // Indicates the level of DC line when transferring command
+         unsigned int dc_data_level: 1;   // Indicates the level of DC line when transferring color data
+@@ -60,6 +61,11 @@ typedef struct {
+     lcd_spi_trans_descriptor_t trans_pool[]; // Transaction pool
+ } esp_lcd_panel_io_spi_t;
+ 
++void lcd_panel_io_spi_set_sync_trans(esp_lcd_panel_io_handle_t io, bool sync) {
++    esp_lcd_panel_io_spi_t *spi_panel_io = __containerof(io, esp_lcd_panel_io_spi_t, base);
++    spi_panel_io->sync_trans = sync;
++}
++
+ esp_err_t esp_lcd_new_panel_io_spi(esp_lcd_spi_bus_handle_t bus, const esp_lcd_panel_io_spi_config_t *io_config, esp_lcd_panel_io_handle_t *ret_io)
+ {
+ #if CONFIG_LCD_ENABLE_DEBUG_LOG
+@@ -386,9 +392,14 @@ static esp_err_t panel_io_spi_tx_color(esp_lcd_panel_io_t *io, int lcd_cmd, cons
+         }
+ 
+         // color data is usually large, using queue+blocking mode
+-        ret = spi_device_queue_trans(spi_panel_io->spi_dev, &lcd_trans->base, portMAX_DELAY);
+-        ESP_GOTO_ON_ERROR(ret, err, TAG, "spi transmit (queue) color failed");
+-        spi_panel_io->num_trans_inflight++;
++        if (!spi_panel_io->sync_trans) {
++            ret = spi_device_queue_trans(spi_panel_io->spi_dev, &lcd_trans->base, portMAX_DELAY);
++            ESP_GOTO_ON_ERROR(ret, err, TAG, "spi transmit (queue) color failed");
++            spi_panel_io->num_trans_inflight++;
++        } else {
++            ret = spi_device_polling_transmit(spi_panel_io->spi_dev, &lcd_trans->base);
++            ESP_GOTO_ON_ERROR(ret, err, TAG, "spi transmit (polling) color failed");
++        }
+ 
+         // move on to the next chunk
+         color = (const uint8_t *)color + chunk_size;

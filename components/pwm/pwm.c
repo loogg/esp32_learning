@@ -1,5 +1,4 @@
 #include "driver/ledc.h"
-#include "shell.h"
 
 #define LOG_LOCAL_LEVEL ESP_LOG_INFO
 #define LOG_LOCAL_TAG "pwm"

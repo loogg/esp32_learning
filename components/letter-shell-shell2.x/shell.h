@@ -4,9 +4,9 @@
  * @brief letter shell
  * @version 2.0.0
  * @date 2018-12-29
- * 
+ *
  * @Copyright (c) 2018 Letter
- * 
+ *
  */
 
 #ifndef     __SHELL_H__
@@ -17,14 +17,14 @@
 #if SHELL_USING_AUTH == 1
     #if !defined(SHELL_USER_PASSWORD)
         #error "please config shell user password (int shell_cfg.h) "
-    #endif  
-#endif      
+    #endif
+#endif
 
 #define     SHELL_VERSION               "2.0.8"                 /**< 版本号 */
 
 /**
  * @brief shell键值定义
- * 
+ *
  */
 #define     SHELL_KEY_LF                0x0A
 #define     SHELL_KEY_CR                0x0D
@@ -63,7 +63,7 @@
 
 /**
  * @brief shell变量类型定义
- * 
+ *
  */
 #define     SHELL_VAR_INT               0
 #define     SHELL_VAR_SHORT             1
@@ -83,7 +83,7 @@
 
 /**
  * @brief shell命令导出
- * 
+ *
  * @attention 命令导出方式支持keil,iar的编译器以及gcc，具体参考readme
  */
 #if SHELL_USING_CMD_EXPORT == 1
@@ -146,14 +146,14 @@
                 shellDesc##var,                                             \
                 type                                                        \
             }
-#else 
-    #define SHELL_EXPORT_VAR(var, variable, desc, type) 
+#else
+    #define SHELL_EXPORT_VAR(var, variable, desc, type)
 #endif /** SHELL_USING_VAR == 1 */
 
 #else
 #define     SHELL_EXPORT_CMD(cmd, func, desc)
 #define     SHELL_EXPORT_CMD_EX(cmd, func, desc, help)
-#define     SHELL_EXPORT_VAR(var, variable, desc, type) 
+#define     SHELL_EXPORT_VAR(var, variable, desc, type)
 #endif /** SHELL_USING_CMD_EXPORT == 1 */
 
 #define     SHELL_EXPORT_VAR_INT(var, variable, desc)                       \
@@ -170,7 +170,7 @@
 
 /**
  * @brief shell命令条目
- * 
+ *
  * @note 用于shell命令通过命令表的方式定义
  */
 #if SHELL_USING_CMD_EXPORT == 0
@@ -188,7 +188,7 @@
                 (int (*)())func,                                            \
                 #desc,                                                      \
                 #help                                                       \
-            }   
+            }
 #else /** SHELL_LONG_HELP == 1 */
 #define     SHELL_CMD_ITEM(cmd, func, desc)                                 \
             {                                                               \
@@ -201,7 +201,7 @@
                 #cmd,                                                       \
                 (int (*)())func,                                            \
                 #desc,                                                      \
-            }  
+            }
 #endif /** SHELL_LONG_HELP == 1 */
 
 #define     SHELL_VAR_ITEM(var, variable, desc, type)                       \
@@ -224,9 +224,9 @@
 
 /**
  * @brief shell读取数据函数原型
- * 
+ *
  * @param char shell读取的字符
- * 
+ *
  * @return char 0 读取数据成功
  * @return char -1 读取数据失败
  */
@@ -234,21 +234,21 @@ typedef signed char (*shellRead)(char *);
 
 /**
  * @brief shell写数据函数原型
- * 
+ *
  * @param const char 需写的字符
  */
 typedef void (*shellWrite)(const char);
 
 /**
  * @brief shell指令执行函数原型
- * 
+ *
  */
 typedef int (*shellFunction)();
 
 
 /**
  * @brief shell输入状态
- * 
+ *
  */
 typedef enum
 {
@@ -260,7 +260,7 @@ typedef enum
 
 /**
  * @brief shell 命令定义
- * 
+ *
  */
 typedef struct
 {
@@ -276,7 +276,7 @@ typedef struct
 #if SHELL_USING_VAR == 1
 /**
  * @brief shell 变量定义
- * 
+ *
  */
 typedef struct
 {
@@ -290,7 +290,7 @@ typedef struct
 
 /**
  * @brief shell对象定义
- * 
+ *
  */
 typedef struct
 {
@@ -328,7 +328,7 @@ typedef struct
 
 /**
  * @brief shell按键功能定义
- * 
+ *
  */
 typedef struct
 {

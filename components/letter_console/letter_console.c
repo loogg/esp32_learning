@@ -13,14 +13,37 @@
 
 static SHELL_TypeDef _shell = {0};
 
-static int cmd_free(int argc, char *agrv[]) {
+static int cmd_free(int argc, char *argv[]) {
     size_t total = 0, used = 0, max_used = 0;
 
-
+    printf("Default heap memory:\r\n");
     total = heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
-    used = total - esp_get_free_heap_size();
-    max_used = total - esp_get_minimum_free_heap_size();
+    used = total - heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
+    max_used = total - heap_caps_get_minimum_free_size(MALLOC_CAP_DEFAULT);
+    printf("total   : %d\r\n", total);
+    printf("used    : %d\r\n", used);
+    printf("maximum : %d\r\n", max_used);
 
+    printf("SPI RAM memory:\r\n");
+    total = heap_caps_get_total_size(MALLOC_CAP_SPIRAM);
+    used = total - heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+    max_used = total - heap_caps_get_minimum_free_size(MALLOC_CAP_SPIRAM);
+    printf("total   : %d\r\n", total);
+    printf("used    : %d\r\n", used);
+    printf("maximum : %d\r\n", max_used);
+
+    printf("Internal RAM memory:\r\n");
+    total = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
+    used = total - heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    max_used = total - heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL);
+    printf("total   : %d\r\n", total);
+    printf("used    : %d\r\n", used);
+    printf("maximum : %d\r\n", max_used);
+
+    printf("DMA-capable memory:\r\n");
+    total = heap_caps_get_total_size(MALLOC_CAP_DMA);
+    used = total - heap_caps_get_free_size(MALLOC_CAP_DMA);
+    max_used = total - heap_caps_get_minimum_free_size(MALLOC_CAP_DMA);
     printf("total   : %d\r\n", total);
     printf("used    : %d\r\n", used);
     printf("maximum : %d\r\n", max_used);
@@ -37,7 +60,7 @@ static int cmd_reboot(void) {
 SHELL_EXPORT_CMD(reboot, cmd_reboot, Reboot the system.);
 
 
-static int cmd_ps(int argc, char *agrv[]) {
+static int cmd_ps(int argc, char *argv[]) {
     char * task_list_buffer = malloc(uxTaskGetNumberOfTasks() * 40);
     if (task_list_buffer == NULL) {
         ESP_LOGE(LOG_LOCAL_TAG, "malloc failed");
@@ -80,7 +103,7 @@ int letter_console_init(void) {
     _shell.write = _shell_write;
     shellInit(&_shell);
 
-    xTaskCreate(shellTask, "shell", 2048, &_shell, 10, NULL);
+    xTaskCreate(shellTask, "shell", 4096, &_shell, 10, NULL);
 
     return 0;
 }

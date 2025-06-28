@@ -1,0 +1,23 @@
+menu "SPI DEV Configuration"
+
+    config SPI_DEV_PIN_MOSI
+        int "SPI MOSI Pin"
+        default 11
+
+    config SPI_DEV_PIN_MISO
+        int "SPI MISO Pin"
+        default 13
+
+    config SPI_DEV_PIN_SCK
+        int "SPI SCK Pin"
+        default 12
+
+    config SPI_DEV_PIN_SD_CS
+        int "SPI SD Card CS Pin"
+        default 2
+
+    config SPI_DEV_PIN_LCD_CS
+        int "SPI LCD CS Pin"
+        default 21
+
+endmenu

@@ -1,0 +1,19 @@
+menu "SD Card Configuration"
+
+    config SDCARD_DETECT
+        bool "Enable SD Card Detection"
+        default n
+        help
+            Enable detection of SD card insertion and removal.
+
+    if SDCARD_DETECT
+
+        config SDCARD_DETECT_GPIO
+            int "GPIO Pin for SD Card Detection"
+            default 8
+            help
+                Specify the GPIO pin number used for detecting SD card insertion.
+
+    endif
+
+endmenu

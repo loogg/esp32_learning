@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int ftp_get_max_session_num(void);
 int ftp_set_max_session_num(int num);
 const char *ftp_get_session_username(void);
@@ -17,5 +21,9 @@ int ftp_force_restart(void);
 int ftp_get_port(void);
 int ftp_set_port(int port);
 int ftp_init(uint32_t stack_size, uint8_t priority);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

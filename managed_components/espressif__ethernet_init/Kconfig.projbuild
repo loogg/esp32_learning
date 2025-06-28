@@ -1,0 +1,364 @@
+menu "Ethernet Configuration"
+
+    orsource "$IDF_PATH/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+
+    config ETHERNET_RX_TASK_STACK_SIZE
+        int "EMAC Rx task stack size"
+        default 2048
+        help
+            Set stack size for EMAC Rx task in B.
+
+    config ETHERNET_INTERNAL_SUPPORT
+        depends on SOC_EMAC_SUPPORTED
+        select ETH_USE_ESP32_EMAC
+        default y
+        bool "Internal EMAC"
+        help
+            Use internal Ethernet MAC controller.
+
+    if ETHERNET_INTERNAL_SUPPORT
+        choice ETHERNET_PHY_MODEL
+            prompt "Ethernet PHY Device"
+            default ETHERNET_PHY_IP101
+            help
+                Select the Ethernet PHY device to use.
+
+            config ETHERNET_PHY_IP101
+                bool "IP101"
+                help
+                    IP101 is a single port 10/100 MII/RMII/TP/Fiber Fast Ethernet Transceiver.
+                    Goto http://www.icplus.com.tw/pp-IP101G.html for more information about it.
+
+            config ETHERNET_PHY_RTL8201
+                bool "RTL8201/SR8201"
+                help
+                    RTL8201F/SR8201F is a single port 10/100Mb Ethernet Transceiver with auto MDIX.
+                    Goto http://www.corechip-sz.com/productsview.asp?id=22 for more information about it.
+
+            config ETHERNET_PHY_LAN87XX
+                bool "LAN87xx"
+                help
+                    Below chips are supported:
+                    LAN8710A is a small footprint MII/RMII 10/100 Ethernet Transceiver with HP Auto-MDIX and
+                        flexPWR® Technology.
+                    LAN8720A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX Support.
+                    LAN8740A/LAN8741A is a small footprint MII/RMII 10/100 Energy Efficient Ethernet Transceiver
+                        with HP Auto-MDIX and flexPWR® Technology.
+                    LAN8742A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX and
+                        flexPWR® Technology.
+                    Goto https://www.microchip.com for more information about them.
+
+            config ETHERNET_PHY_DP83848
+                bool "DP83848"
+                help
+                    DP83848 is a single port 10/100Mb/s Ethernet Physical Layer Transceiver.
+                    Goto http://www.ti.com/product/DP83848J for more information about it.
+
+            config ETHERNET_PHY_KSZ80XX
+                bool "KSZ80xx"
+                help
+                    With the KSZ80xx series, Microchip offers single-chip 10BASE-T/100BASE-TX
+                    Ethernet Physical Layer Tranceivers (PHY).
+                    The following chips are supported: KSZ8001, KSZ8021, KSZ8031, KSZ8041,
+                        KSZ8051, KSZ8061, KSZ8081, KSZ8091
+                    Goto https://www.microchip.com for more information about them.
+
+            config ETHERNET_PHY_LAN867X
+                bool "LAN867x"
+                help
+                    The LAN8670/1/2 is a high-performance 10BASE-T1S single-pair Ethernet PHY transceiver for 10 Mbit/s half-duplex networking over a single pair of conductors
+                    Goto https://www.microchip.com for more information about them.
+        endchoice # ETHERNET_PHY_MODEL
+
+        config ETHERNET_MDC_GPIO
+            int "SMI MDC GPIO number"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 23 if IDF_TARGET_ESP32
+            default 31 if IDF_TARGET_ESP32P4
+            help
+                Set the GPIO number used by SMI MDC.
+
+        config ETHERNET_MDIO_GPIO
+            int "SMI MDIO GPIO number"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 18 if IDF_TARGET_ESP32
+            default 52 if IDF_TARGET_ESP32P4
+            help
+                Set the GPIO number used by SMI MDIO.
+
+        config ETHERNET_PHY_RST_GPIO
+            int "PHY Reset GPIO number"
+            range -1 ENV_GPIO_OUT_RANGE_MAX
+            default 5 if IDF_TARGET_ESP32
+            default 51 if IDF_TARGET_ESP32P4
+            help
+                Set the GPIO number used to reset PHY chip.
+                Set to -1 to disable PHY chip hardware reset.
+
+        config ETHERNET_PHY_ADDR
+            int "PHY Address"
+            range -1 31
+            default 1
+            help
+                Set PHY address according your board schematic.
+    endif # ETHERNET_INTERNAL_SUPPORT
+
+    config ETHERNET_SPI_SUPPORT
+        bool "SPI Ethernet"
+        default n
+        select ETH_USE_SPI_ETHERNET
+        help
+            Use external SPI-Ethernet module(s).
+
+    if ETHERNET_SPI_SUPPORT
+        config ETHERNET_SPI_NUMBER
+            int "Number of SPI Ethernet modules to use at a time"
+            range 1 2
+            default 1
+            help
+                Set the number of SPI Ethernet modules you want to use at a time. Multiple SPI modules can be connected
+                to one SPI interface and can be separately accessed based on state of associated Chip Select (CS).
+
+        choice ETHERNET_TYPE_SPI
+            prompt "Ethernet SPI"
+            default ETHERNET_USE_W5500
+            help
+                Select which kind of spi Ethernet will be used.
+
+            config ETHERNET_USE_DM9051
+                bool "DM9051 Module"
+                select ETH_SPI_ETHERNET_DM9051
+                help
+                    Select external SPI-Ethernet module (DM9051).
+
+            config ETHERNET_USE_KSZ8851SNL
+                bool "KSZ8851SNL Module"
+                select ETH_SPI_ETHERNET_KSZ8851SNL
+                help
+                    Select external SPI-Ethernet module (KSZ8851SNL).
+
+            config ETHERNET_USE_W5500
+                bool "W5500 Module"
+                select ETH_SPI_ETHERNET_W5500
+                help
+                    Select external SPI-Ethernet module (W5500).
+
+            config ETHERNET_USE_CH390
+                bool "CH390 Module"
+                help
+                    Select external SPI-Ethernet module (CH390).
+            
+            config ETHERNET_USE_ENC28J60
+                bool "ENC28J60 Module"
+                help
+                    Select external SPI-Ethernet module (ENC28J60).
+
+        endchoice
+
+        config ETHERNET_SPI_HOST
+            int "SPI Host Number" 
+            default 1
+            help
+                Set the SPI host used to communicate with the SPI Ethernet Controller.
+
+        config ETHERNET_SPI_SCLK_GPIO
+            int "SPI SCLK GPIO number"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 14 if IDF_TARGET_ESP32
+            default 12 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+            default 6 if IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C61
+            default 4 if IDF_TARGET_ESP32H2
+            default 33 if IDF_TARGET_ESP32P4
+            default 8 if IDF_TARGET_ESP32C5
+            help
+                Set the GPIO number used by SPI SCLK.
+
+        config ETHERNET_SPI_MOSI_GPIO
+            int "SPI MOSI GPIO number"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 13 if IDF_TARGET_ESP32
+            default 11 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+            default 7 if IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C61
+            default 5 if IDF_TARGET_ESP32H2
+            default 32 if IDF_TARGET_ESP32P4
+            default 10 if IDF_TARGET_ESP32C5
+            help
+                Set the GPIO number used by SPI MOSI.
+
+        config ETHERNET_SPI_MISO_GPIO
+            int "SPI MISO GPIO number"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+            default 12 if IDF_TARGET_ESP32
+            default 13 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+            default 2 if IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C61
+            default 0 if IDF_TARGET_ESP32H2
+            default 24 if IDF_TARGET_ESP32P4
+            default 9 if IDF_TARGET_ESP32C5
+            help
+                Set the GPIO number used by SPI MISO.
+
+        config ETHERNET_SPI_CLOCK_MHZ
+            int "SPI clock speed (MHz)"
+            range 5 80
+            default 16
+            help
+                Set the clock speed (MHz) of SPI interface.
+
+        config ETHERNET_SPI_CS0_GPIO
+            int "SPI CS0 GPIO number for SPI Ethernet module #1"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 15 if IDF_TARGET_ESP32
+            default 10 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32C2
+            default 3 if IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C5 || IDF_TARGET_ESP32C61
+            default 1 if IDF_TARGET_ESP32H2
+            default 21 if IDF_TARGET_ESP32P4
+            help
+                Set the GPIO number used by SPI CS0, i.e. Chip Select associated with the first SPI Eth module).
+
+        config ETHERNET_SPI_INT0_GPIO
+            int "Interrupt GPIO number SPI Ethernet module #1"
+            range -1 ENV_GPIO_IN_RANGE_MAX
+            default 4 if IDF_TARGET_ESP32 || IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3
+            default 4 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C5
+            default 10 if IDF_TARGET_ESP32H2
+            default 48 if IDF_TARGET_ESP32P4
+            default 0 if IDF_TARGET_ESP32C61
+            help
+                Set the GPIO number used by the first SPI Ethernet module interrupt line.
+                Set -1 to use SPI Ethernet module in polling mode.
+
+        config ETHERNET_SPI_PHY_RST0_GPIO
+            int "PHY Reset GPIO number of SPI Ethernet Module #1"
+            range -1 ENV_GPIO_OUT_RANGE_MAX
+            default -1
+            help
+                Set the GPIO number used to reset PHY chip on the first SPI Ethernet module.
+                Set to -1 to disable PHY chip hardware reset.
+
+        config ETHERNET_SPI_PHY_ADDR0
+            int "PHY Address of SPI Ethernet Module #1"
+            range 0 31
+            default 1
+            help
+                Set the first SPI Ethernet module PHY address according your board schematic.
+
+        config ETHERNET_SPI_AUTOCONFIG_MAC_ADDR0
+            bool "Auto-configure MAC address of SPI Ethernet #1"
+            default y
+            select ETH_SPI_CONFIG_ENABLE_MAC_ADDR0
+            help
+                Auto-configure mac address for SPI Ethernet
+
+        config ETHERNET_SPI_MAC_ADDR0
+            string "MAC address of SPI Ethernet #1"
+            default "5a:bf:25:e0:41:00"
+            depends on !ETHERNET_SPI_AUTOCONFIG_MAC_ADDR0
+
+        config ETHERNET_SPI_CS1_GPIO
+            depends on ETHERNET_SPI_NUMBER > 1
+            int "SPI CS1 GPIO number for SPI Ethernet module #2"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 32 if IDF_TARGET_ESP32
+            default 7 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+            default 8 if IDF_TARGET_ESP32C3
+            default 21 if IDF_TARGET_ESP32C6
+            default 3 if IDF_TARGET_ESP32C2
+            default 11 if IDF_TARGET_ESP32H2
+            default 23 if IDF_TARGET_ESP32P4 || IDF_TARGET_ESP32C61
+            default 1 if IDF_TARGET_ESP32C5
+            help
+                Set the GPIO number used by SPI CS1, i.e. Chip Select associated with the second SPI Eth module.
+
+        config ETHERNET_SPI_INT1_GPIO
+            depends on ETHERNET_SPI_NUMBER > 1
+            int "Interrupt GPIO number SPI Ethernet module #2"
+            range -1 ENV_GPIO_IN_RANGE_MAX
+            default 33 if IDF_TARGET_ESP32
+            default 5 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32C2
+            default 5 if IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C5
+            default 9 if IDF_TARGET_ESP32H2
+            default 47 if IDF_TARGET_ESP32P4
+            default 1 if IDF_TARGET_ESP32C61
+            help
+                Set the GPIO number used by the second SPI Ethernet module interrupt line.
+                Set -1 to use SPI Ethernet module in polling mode.
+
+        config ETHERNET_SPI_PHY_RST1_GPIO
+            depends on ETHERNET_SPI_NUMBER > 1
+            int "PHY Reset GPIO number of SPI Ethernet Module #2"
+            range -1 ENV_GPIO_OUT_RANGE_MAX
+            default -1
+            help
+                Set the GPIO number used to reset PHY chip on the second SPI Ethernet module.
+                Set to -1 to disable PHY chip hardware reset.
+
+        config ETHERNET_SPI_PHY_ADDR1
+            depends on ETHERNET_SPI_NUMBER > 1
+            int "PHY Address of SPI Ethernet Module #2"
+            range 0 31
+            default 1
+            help
+                Set the second SPI Ethernet module PHY address according your board schematic.
+
+        config ETHERNET_SPI_AUTOCONFIG_MAC_ADDR1
+            depends on ETHERNET_SPI_NUMBER > 1
+            bool "Auto-configure MAC address of SPI Ethernet #2"
+            default y
+            help
+                Auto-configure mac address for SPI Ethernet
+
+        config ETHERNET_SPI_MAC_ADDR1
+            string "MAC address of SPI Ethernet #2"
+            default "5a:bf:25:e0:41:01"
+            depends on (!ETHERNET_SPI_AUTOCONFIG_MAC_ADDR1) && (ETHERNET_SPI_NUMBER > 1)
+
+        config ETHERNET_SPI_POLLING0_MS_VAL
+            depends on ETHERNET_SPI_INT0_GPIO < 0
+            int "Polling period in msec of SPI Ethernet Module #1"
+            default 10
+            help
+                Set SPI Ethernet module polling period.
+
+        config ETHERNET_SPI_POLLING1_MS_VAL
+            depends on ETHERNET_SPI_NUMBER > 1 && ETHERNET_SPI_INT1_GPIO < 0
+            int "Polling period in msec of SPI Ethernet Module #2"
+            default 10
+            help
+                Set SPI Ethernet module polling period.
+
+        # Hidden variable to ensure that polling period option is visible only when interrupt is set disabled and
+        # it is set to known value (0) when interrupt is enabled at the same time.
+        config ETHERNET_SPI_POLLING0_MS
+            int
+            default ETHERNET_SPI_POLLING0_MS_VAL if ETHERNET_SPI_POLLING0_MS_VAL > 0
+            default 0
+
+        # Hidden variable to ensure that polling period option is visible only when interrupt is set disabled and
+        # it is set to known value (0) when interrupt is enabled at the same time.
+        config ETHERNET_SPI_POLLING1_MS
+            depends on ETHERNET_SPI_NUMBER > 1
+            int
+            default ETHERNET_SPI_POLLING1_MS_VAL if ETHERNET_SPI_POLLING1_MS_VAL > 0
+            default 0
+
+        choice ETHERNET_ENC28J60_DUPLEX_MODE
+            depends on ETHERNET_USE_ENC28J60
+            prompt "Duplex Mode"
+            default ETHERNET_ENC28J60_DUPLEX_HALF
+            help
+                Select ENC28J60 Duplex operation mode.
+
+            config ETHERNET_ENC28J60_DUPLEX_FULL
+                bool "Full Duplex"
+                help
+                    Set ENC28J60 to Full Duplex mode. Do not forget to manually set the remote node (switch, router
+                    or Ethernet controller) to full-duplex operation mode too.
+
+            config ETHERNET_ENC28J60_DUPLEX_HALF
+                bool "Half Duplex"
+                help
+                    Set ENC28J60 to Half Duplex mode.
+        endchoice # EXAMPLE_ENC28J60_DUPLEX_MODE
+
+    endif # ETHERNET_SPI_SUPPORT
+endmenu

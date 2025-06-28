@@ -3,6 +3,14 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int pwm_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

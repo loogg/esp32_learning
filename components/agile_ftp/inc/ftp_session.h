@@ -7,6 +7,10 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum ftp_session_state
 {
     FTP_SESSION_STATE_USER = 0,
@@ -30,5 +34,9 @@ struct ftp_session
 
 int ftp_session_create(int fd, struct sockaddr_storage *addr, socklen_t addr_len);
 int ftp_session_force_quit(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

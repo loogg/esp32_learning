@@ -1,6 +1,6 @@
 file(GLOB_RECURSE srcs "*.c")
 set(includes ".")
-set(public_requires "letter-shell-shell2.x" "esp_event" "esp_wifi" "nvs_flash")
+set(public_requires "esp_event" "esp_wifi")
 
 idf_component_register(SRCS ${srcs}
                     REQUIRES ${public_requires}

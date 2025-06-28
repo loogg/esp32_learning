@@ -1,0 +1,7 @@
+# This file was generated using idf.py save-defconfig. It can be edited manually.
+# Espressif IoT Development Framework (ESP-IDF) Project Minimal Configuration
+#
+CONFIG_IN_TRANSFER_BUFFER_SIZE=2048
+CONFIG_OUT_TRANSFER_BUFFER_SIZE=2048
+CONFIG_USBH_TASK_CORE_ID=1
+CONFIG_ESP32S3_INSTRUCTION_CACHE_32KB=y

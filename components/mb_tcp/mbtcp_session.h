@@ -8,6 +8,10 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _mbtcp_session {
     int active;
     int socket;
@@ -31,5 +35,9 @@ void mbtcp_session_close_all(void);
 void mbtcp_session_check_timeout(void);
 void mbtcp_session_check_recv_timeout(mbtcp_session_t *session);
 void mbtcp_session_handle(fd_set *readset, fd_set *exceptset);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __MBTCP_SESSION_H */
