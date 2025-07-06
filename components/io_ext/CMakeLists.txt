@@ -1,6 +1,6 @@
 file(GLOB_RECURSE srcs "*.c")
 set(includes ".")
-set(public_requires espressif__esp_io_expander_tca95xx_16bit iic_dev)
+set(public_requires espressif__esp_io_expander_tca95xx_16bit iic_dev gui)
 
 idf_component_register(SRCS ${srcs}
                     REQUIRES ${public_requires}

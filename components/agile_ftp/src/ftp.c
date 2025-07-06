@@ -142,7 +142,7 @@ _ftp_restart:
 }
 
 int ftp_init(uint32_t stack_size, uint8_t priority) {
-    xTaskCreate(ftp_entry, "ftp", stack_size, NULL, priority, NULL);
+    xTaskCreateWithCaps(ftp_entry, "ftp", stack_size, NULL, priority, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     printf("\r\n[FTP] Powered by Ma Longwei\r\n");
     printf("[FTP] github: https://github.com/loogg\r\n");

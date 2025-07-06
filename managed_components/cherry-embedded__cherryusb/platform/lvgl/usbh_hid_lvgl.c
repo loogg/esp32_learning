@@ -316,7 +316,7 @@ void usbh_hid_mouse_callback(void *arg, int nbytes)
 
         hid_ctx->mouse.left_button = hid_mouse_buffer[0];
         hid_ctx->mouse.x += (int8_t)hid_mouse_buffer[1];
-        hid_ctx->mouse.y += (int8_t)hid_mouse_buffer[3];
+        hid_ctx->mouse.y += (int8_t)hid_mouse_buffer[2];
 
         usbh_int_urb_fill(&hid_class->intin_urb, hid_class->hport, hid_class->intin, hid_mouse_buffer, hid_class->intin->wMaxPacketSize, 0,
                           usbh_hid_mouse_callback, hid_class);
@@ -370,6 +370,8 @@ static char usb_hid_get_keyboard_char(uint8_t key, uint8_t shift)
     return ret_key;
 }
 
+extern int gui_key_send(uint8_t *key, int len);
+
 void usbh_hid_keyboard_callback(void *arg, int nbytes)
 {
     struct usbh_hid *hid_class = (struct usbh_hid *)arg;
@@ -378,6 +380,7 @@ void usbh_hid_keyboard_callback(void *arg, int nbytes)
         struct usbh_hid_lvgl *hid_ctx = &g_hid_lvgl;
         struct usb_hid_kbd_report *keyboard = (struct usb_hid_kbd_report *)hid_keyboard_buffer;
 
+        gui_key_send(keyboard->key, 6);
         for (int i = 0; i < 6; i++) {
             if ((keyboard->key[i] <= HID_KBD_USAGE_MAX) && (keyboard->key[i] > HID_KBD_USAGE_NONE)) {
                 char key = 0;

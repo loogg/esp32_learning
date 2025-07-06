@@ -3,6 +3,7 @@
 #include "iic_dev.h"
 #include "esp_io_expander_tca95xx_16bit.h"
 #include "esp_log.h"
+#include "gui.h"
 
 #define TAG             "io_ext"
 
@@ -33,5 +34,6 @@ int io_ext_init(void) {
         return -1;
     }
 
+    gui_close_lcd_blk();
     return 0;
 }

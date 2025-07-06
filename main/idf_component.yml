@@ -24,3 +24,5 @@ dependencies:
   cherry-embedded/cherryusb: ^1.4.100
   espressif/usb_host_hid: ^1.0.3
   espressif/freetype: ^2.13.3~1
+  espressif/esp32-camera: ^2.0.16
+  jkent/ramfs: ^0.1.0

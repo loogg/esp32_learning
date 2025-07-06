@@ -4,6 +4,7 @@
 #include "sound_player.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "gui.h"
 
 #define PREFIX_PATH "/sdcard/Music"
 

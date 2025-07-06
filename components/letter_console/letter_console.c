@@ -103,7 +103,7 @@ int letter_console_init(void) {
     _shell.write = _shell_write;
     shellInit(&_shell);
 
-    xTaskCreate(shellTask, "shell", 4096, &_shell, 10, NULL);
+    xTaskCreateWithCaps(shellTask, "shell", 4096, &_shell, 10, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     return 0;
 }

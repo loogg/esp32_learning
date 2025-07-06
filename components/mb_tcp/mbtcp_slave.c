@@ -164,7 +164,7 @@ int mbtcp_slave_reset(void) {
 int mbtcp_slave_start(void) {
     _server.socket = -1;
 
-    xTaskCreate(mbtcp_entry, "mbtcp", MBTCP_THREAD_STACK_SIZE, NULL, MBTCP_THREAD_PRI, NULL);
+    xTaskCreateWithCaps(mbtcp_entry, "mbtcp", MBTCP_THREAD_STACK_SIZE, NULL, MBTCP_THREAD_PRI, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     return 0;
 }

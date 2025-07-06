@@ -1,0 +1,27 @@
+menu "RamFS"
+
+config RAMFS_USE_RBTREE
+	bool "Use rbtree implementation"
+	default n
+	help
+		This option uses the larger, but theoreticaly faster rbtree ramfs
+		implementtion. Both memory and code footprint are larger.
+
+config RAMFS_MAX_PARTITIONS
+	int "Max partitions"
+	default 1
+	help
+		This option specifies the number of partitions that can be mounted
+		using VFS at the same time.
+
+config RAMFS_VFS_SUPPORT_DIR
+	bool "Compile in VFS directory functions"
+	default y
+	depends on VFS_SUPPORT_DIR
+	help
+		This option if enabled includes the following VFS functions:
+
+		stat, unlink, rename, opendir, readdir, telldir, seekdir, closedir,
+		mkdir, rmdir, access, truncate, and ftruncate
+
+endmenu

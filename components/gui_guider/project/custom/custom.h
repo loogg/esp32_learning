@@ -19,7 +19,6 @@ extern "C" {
 #include "game_list_screen.h"
 
 void custom_init(lv_ui *ui);
-void gui_disp_set_sync_trans(bool sync);
 
 #ifdef __cplusplus
 }

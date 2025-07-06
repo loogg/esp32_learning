@@ -106,8 +106,9 @@ int spisdcard_init(void) {
 #if CONFIG_SDCARD_DETECT
     gpio_set_direction(CONFIG_SDCARD_DETECT_GPIO, GPIO_MODE_INPUT);
     gpio_set_pull_mode(CONFIG_SDCARD_DETECT_GPIO, GPIO_PULLUP_ONLY);
-    xTaskCreate(sdcard_detect_entry, "sdcard_detect", 4096, NULL, 5, NULL);
+    xTaskCreateWithCaps(sdcard_detect_entry, "sdcard_detect", 4096, NULL, 5, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 #else
+    vTaskDelay(pdMS_TO_TICKS(200));
     _mount_sd();
 #endif
 

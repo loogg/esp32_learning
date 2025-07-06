@@ -77,7 +77,7 @@ int rndis_net_init(void) {
     }
     esp_netif_attach(eth_netif, glue);
 
-    xTaskCreate(rndis_net_entry, "rndis_net", 4096, eth_handle, 5, NULL);
+    xTaskCreateWithCaps(rndis_net_entry, "rndis_net", 4096, eth_handle, 5, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     return 0;
 }

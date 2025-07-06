@@ -186,7 +186,7 @@ static int uart_init(void) {
 int rtu_slave_init(void) {
     uart_init();
 
-    xTaskCreate(rtu_slave_task, "rtu_slave", 2048, NULL, 6, NULL);
+    xTaskCreateWithCaps(rtu_slave_task, "rtu_slave", 2048, NULL, 6, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     ESP_LOGI(LOG_LOCAL_TAG, "init success.");
 

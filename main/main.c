@@ -28,6 +28,9 @@
 #include "io_ext.h"
 #include "gui.h"
 #include "sound_player.h"
+#include "nesplayer.h"
+#include "camera_player.h"
+#include "ramfs/vfs.h"
 
 void app_main(void)
 {
@@ -47,7 +50,18 @@ void app_main(void)
     inconsole_init();
 #endif
 
+    ramfs_fs_t *fs = ramfs_init();
+    ramfs_vfs_conf_t ramfs_vfs_conf = {
+        .base_path = "/ramfs",
+        .fs        = fs,
+        .max_files = 15,
+    };
+    ret = ramfs_vfs_register(&ramfs_vfs_conf);
+    ESP_ERROR_CHECK(ret);
+
     led_init();
+    iic_dev_init();
+    io_ext_init();
     // key_init();
     // rtu_slave_init();
     // timer_init();
@@ -55,8 +69,6 @@ void app_main(void)
     wifi_init_sta();
     spi_dev_init();
     spisdcard_init();
-    iic_dev_init();
-    io_ext_init();
     mbtcp_slave_start();
     ftp_init(4096, 5);
 
@@ -69,6 +81,9 @@ void app_main(void)
     sound_player_init();
 
     gui_init();
+
+    nesplayer_init();
+    camera_player_init();
 
     while (1) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);

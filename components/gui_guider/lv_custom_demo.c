@@ -15,7 +15,6 @@
 #define TAG             "lvgl.demo"
 
 #define SD_TTF_PATH "/sdcard/Cubic_11.ttf"
-#define FREETYPE_TTF_PATH "S:" SD_TTF_PATH
 
 extern int sdcard_check_mount(void);
 
@@ -34,10 +33,7 @@ lv_font_t *lv_ttf_font_12 = NULL;
 lv_font_t *lv_ttf_font_10 = NULL;
 lv_font_t *lv_ttf_font_8 = NULL;
 
-#ifdef CONFIG_FONT_TTF_USING_FREETYPE
-lv_ft_info_t ft_info;
-#endif
-
+#ifdef CONFIG_FONT_TTF_USING_TINYTTF
 static uint8_t *ttf_ram_buf = NULL;
 static size_t ttf_ram_buf_size = 0;
 
@@ -73,6 +69,44 @@ static int read_ttf_file_to_ram(void) {
     ttf_ram_buf_size = s.st_size;
     return 0;
 }
+#endif
+
+#ifdef CONFIG_FONT_TTF_USING_FREETYPE
+lv_ft_info_t ft_info;
+#define TMP_TTF_PATH "/ramfs/Cubic_11.ttf"
+#define FREETYPE_TTF_PATH "S:" TMP_TTF_PATH
+
+static int copy_ttf_file_to_ramfs(void) {
+    uint8_t *tmp_buf = malloc(1024);
+    if (tmp_buf == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate memory for temporary buffer.");
+        return -1;
+    }
+
+    int sd_fd = open(SD_TTF_PATH, O_RDONLY);
+    if (sd_fd < 0) {
+        ESP_LOGE(TAG, "Failed to open TTF file on SD card: %s", SD_TTF_PATH);
+        free(tmp_buf);
+        return -1;
+    }
+
+    int ram_fd = open(TMP_TTF_PATH, O_CREAT | O_RDWR | O_TRUNC);
+    if (ram_fd < 0) {
+        ESP_LOGE(TAG, "Failed to open TTF file on RAM: %s", TMP_TTF_PATH);
+        close(sd_fd);
+        free(tmp_buf);
+        return -1;
+    }
+
+    int bytes_read;
+    while ((bytes_read = read(sd_fd, tmp_buf, 1024)) > 0) { write(ram_fd, tmp_buf, bytes_read); }
+
+    close(sd_fd);
+    close(ram_fd);
+    free(tmp_buf);
+    return 0;
+}
+#endif
 
 void lv_user_gui_init(void)
 {
@@ -84,12 +118,11 @@ void lv_user_gui_init(void)
 
     ESP_LOGI(TAG, "now create TTF fonts...");
 
+#if CONFIG_FONT_TTF_USING_TINYTTF
     if (read_ttf_file_to_ram() != 0) {
         ESP_LOGE(TAG, "Failed to read TTF file into RAM.");
         return;
     }
-
-#if CONFIG_FONT_TTF_USING_TINYTTF
     lv_ttf_font_32 = lv_tiny_ttf_create_data_ex(ttf_ram_buf, ttf_ram_buf_size, 32, 32 * 1024);
     lv_ttf_font_30 = lv_tiny_ttf_create_data_ex(ttf_ram_buf, ttf_ram_buf_size, 30, 32 * 1024);
     lv_ttf_font_28 = lv_tiny_ttf_create_data_ex(ttf_ram_buf, ttf_ram_buf_size, 28, 32 * 1024);
@@ -106,97 +139,98 @@ void lv_user_gui_init(void)
 #endif
 
 #ifdef CONFIG_FONT_TTF_USING_FREETYPE
+    copy_ttf_file_to_ramfs();
     /*FreeType uses C standard file system, so no driver letter is required.*/
     ft_info.name = FREETYPE_TTF_PATH;
     ft_info.weight = 32;
     ft_info.style = FT_FONT_STYLE_NORMAL;
     ft_info.mem = NULL;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_32 = ft_info.font;
 
     ft_info.weight = 30;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_30 = ft_info.font;
 
     ft_info.weight = 28;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_28 = ft_info.font;
 
     ft_info.weight = 26;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_26 = ft_info.font;
 
     ft_info.weight = 24;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_24 = ft_info.font;
 
     ft_info.weight = 22;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_22 = ft_info.font;
 
     ft_info.weight = 20;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_20 = ft_info.font;
 
     ft_info.weight = 18;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_18 = ft_info.font;
 
     ft_info.weight = 16;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_16 = ft_info.font;
 
     ft_info.weight = 14;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_14 = ft_info.font;
 
     ft_info.weight = 12;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_12 = ft_info.font;
 
     ft_info.weight = 10;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_10 = ft_info.font;
 
     ft_info.weight = 8;
     if(!lv_ft_font_init(&ft_info)) {
-        LOG_E("create failed.");
+        ESP_LOGE(TAG, "create failed.");
         return;
     }
     lv_ttf_font_8 = ft_info.font;

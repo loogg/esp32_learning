@@ -24,7 +24,7 @@ int led_init(void)
         .intr_type = GPIO_INTR_DISABLE};
     gpio_config(&led_config);
 
-    xTaskCreate(led_task, "led_task", 1024, NULL, 5, NULL);
+    xTaskCreateWithCaps(led_task, "led_task", 2048, NULL, 5, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     return 0;
 }

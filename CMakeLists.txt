@@ -19,6 +19,14 @@ add_compile_definitions(
     LV_FONT_DEFAULT=lv_ttf_font_24
 )
 
+add_compile_definitions(
+    LV_FREETYPE_USE_LVGL_PORT
+    FT2_BUILD_LIBRARY
+    FT_CONFIG_MODULES_H=\"ftmodule.h\"
+    FT_CONFIG_OPTIONS_H=\"ftoption.h\"
+)
+
 include($ENV{ADF_PATH}/CMakeLists.txt)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(01_led)
+

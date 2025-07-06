@@ -1,11 +1,12 @@
 file(GLOB_RECURSE srcs "*.c")
 set(includes ".")
-set(public_requires "lvgl__lvgl" "espressif__esp_lvgl_port" "io_ext" "cherry-embedded__cherryusb" "espressif__usb_host_hid")
+set(public_requires "lvgl__lvgl" "espressif__esp_lvgl_port" "io_ext" "nes" "nesplayer" "camera_player")
 
+list(APPEND public_requires "espressif__usb_host_hid")
+
+list(APPEND public_requires "cherry-embedded__cherryusb")
 idf_component_get_property(cherryusb_dir cherry-embedded__cherryusb COMPONENT_DIR)
-
 file(GLOB_RECURSE cherryusb_lvgl_srcs "${cherryusb_dir}/platform/lvgl/*.c")
-
 list(APPEND srcs ${cherryusb_lvgl_srcs})
 list(APPEND includes ${cherryusb_dir}/platform/lvgl)
 

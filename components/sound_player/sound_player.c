@@ -43,6 +43,32 @@ typedef struct _sound_player_t {
 
 static sound_player_t _sound_player = {0};
 
+int sound_player_raw_load(void) {
+    ESP_LOGI(TAG, "Loading raw sound...");
+
+    sound_player_stop();
+
+    audio_pipeline_link(_sound_player.pipeline, (const char *[]){"raw", "i2s"}, 2);
+
+    audio_pipeline_reset_ringbuffer(_sound_player.pipeline);
+    audio_pipeline_reset_elements(_sound_player.pipeline);
+    audio_pipeline_run(_sound_player.pipeline);
+
+    return 0;
+}
+
+int sound_player_raw_write(char *buffer, int len) {
+    raw_stream_write(_sound_player.raw_stream_reader, buffer, len);
+
+    return 0;
+}
+
+int sound_player_set_i2s_clk(int rate, int bits, int ch) {
+    i2s_stream_set_clk(_sound_player.i2s_stream_writer, rate, bits, ch);
+
+    return 0;
+}
+
 int sound_player_music(const char *file_path) {
     ESP_LOGI(TAG, "Playing file: %s", file_path);
 
@@ -56,8 +82,6 @@ int sound_player_music(const char *file_path) {
         ESP_LOGE(TAG, "Unsupported file format: %s", file_path);
         return ESP_FAIL;
     }
-
-    audio_pipeline_set_listener(_sound_player.pipeline, _sound_player.evt);
 
     audio_element_set_uri(_sound_player.fatfs_stream_reader, file_path);
     audio_pipeline_reset_ringbuffer(_sound_player.pipeline);
@@ -104,7 +128,7 @@ static void sound_player_entry(void *param) {
                              music_info.bits, music_info.channels);
                 }
                 audio_element_setinfo(_sound_player.i2s_stream_writer, &music_info);
-                i2s_stream_set_clk(_sound_player.i2s_stream_writer, music_info.sample_rates, music_info.bits, music_info.channels);
+                sound_player_set_i2s_clk(music_info.sample_rates, music_info.bits, music_info.channels);
                 continue;
             }
 
@@ -162,13 +186,16 @@ int sound_player_init(void) {
     ESP_LOGI(TAG, "Set up  event listener");
     audio_event_iface_cfg_t evt_cfg = AUDIO_EVENT_IFACE_DEFAULT_CFG();
     _sound_player.evt               = audio_event_iface_init(&evt_cfg);
+    audio_element_msg_set_listener(_sound_player.fatfs_stream_reader, _sound_player.evt);
+    audio_element_msg_set_listener(_sound_player.raw_stream_reader, _sound_player.evt);
+    audio_element_msg_set_listener(_sound_player.i2s_stream_writer, _sound_player.evt);
+    audio_element_msg_set_listener(_sound_player.wav_decoder, _sound_player.evt);
+    audio_element_msg_set_listener(_sound_player.mp3_decoder, _sound_player.evt);
 
     io_ext_set_dir_output(IO_EXT_PIN(SPK_EN_IO_EXT_PIN));
     io_ext_set_level(IO_EXT_PIN(SPK_EN_IO_EXT_PIN), SPK_EN_ON_LEVEL);
 
-    audio_hal_set_volume(_sound_player.board_handle->audio_hal, 100);
-
-    xTaskCreatePinnedToCore(sound_player_entry, "sound_player", 8192, NULL, 5, NULL, 0);
+    xTaskCreateWithCaps(sound_player_entry, "sound_player", 8192, NULL, 10, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     return 0;
 }

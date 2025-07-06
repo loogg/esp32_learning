@@ -38,11 +38,6 @@ menu "Example Configuration"
             bool "tinyttf"
             help
                 Select tinyttf font type.
-
-        config FONT_TTF_USING_FREETYPE
-            bool "FreeType"
-            help
-                Select FreeType font type.
     endchoice
 
 endmenu

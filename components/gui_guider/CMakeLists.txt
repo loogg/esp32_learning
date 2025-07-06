@@ -12,7 +12,7 @@ set(includes
     "project/generated/guider_customer_fonts"
     "project/custom"
     "project/custom/customer_setup_screens")
-set(public_requires "lvgl__lvgl" "sound_player")
+set(public_requires "lvgl__lvgl" "sound_player" "nes" "nesplayer" "camera_player" "gui")
 
 idf_component_register(SRCS ${srcs}
                     REQUIRES ${public_requires}

@@ -288,7 +288,7 @@ int ftp_session_create(int fd, struct sockaddr_storage *addr, socklen_t addr_len
     LIST_INSERT_HEAD(&_session_head, session, entries);
     taskEXIT_CRITICAL(&_spinlock);
 
-    xTaskCreate(ftp_client_entry, "ftpc", 4096, session, 20, NULL);
+    xTaskCreateWithCaps(ftp_client_entry, "ftpc", 4096, session, 20, NULL, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     return RT_EOK;
 }

@@ -259,6 +259,8 @@ static char usb_hid_get_keyboard_char(uint8_t key, uint8_t shift)
     return ret_key;
 }
 
+extern int gui_key_send(uint8_t *key, int len);
+
 static void lvgl_port_usb_hid_host_interface_callback(hid_host_device_handle_t hid_device_handle, const hid_host_interface_event_t event, void *arg)
 {
     hid_host_dev_params_t dev;
@@ -277,6 +279,7 @@ static void lvgl_port_usb_hid_host_interface_callback(hid_host_device_handle_t h
             if (data_length < sizeof(hid_keyboard_input_report_boot_t)) {
                 return;
             }
+            gui_key_send(keyboard->key, HID_KEYBOARD_KEY_MAX);
             for (int i = 0; i < HID_KEYBOARD_KEY_MAX; i++) {
                 if (keyboard->key[i] > HID_KEY_ERROR_UNDEFINED) {
                     char key = 0;

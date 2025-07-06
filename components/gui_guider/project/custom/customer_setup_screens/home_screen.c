@@ -1,6 +1,7 @@
 #include "home_screen.h"
 #include <math.h>
-
+#include "nesplayer.h"
+#include "camera_player.h"
 
 #define LV_CUSTOM_ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -10,8 +11,9 @@ enum {
 };
 
 #define SCREEN_BODY_MAX 50
-#define MUSIC_BTN_ID 18
-#define GAME_BTN_ID 20
+#define MUSIC_BTN_ID 22
+#define GAME_BTN_ID 24
+#define CAMERA_BTN_ID 26
 
 #define PAD_SPACING 10          // 内边距
 #define GRID_SPACING 10          // 网格间距
@@ -52,6 +54,7 @@ static const char *text_arr[] = {
 
 LV_IMG_DECLARE(img_game);
 LV_IMG_DECLARE(img_music);
+LV_IMG_DECLARE(img_camera);
 
 static void custom_bodys_init(lv_ui *ui, lv_custom_body_t *body_arr, int arr_size) {
     for (int i = 0; i < arr_size; i++) {
@@ -93,7 +96,6 @@ lv_point_t point_final = {0,0};
 
 static void _press_cb(lv_event_t * e) {
     lv_ui *ui = lv_event_get_user_data(e);
-    lv_obj_t * obj = lv_event_get_target(e);
 
     // 获取拖动事件的数据
     lv_indev_t * indev = lv_indev_get_act();
@@ -204,6 +206,9 @@ static void _screen_img_click_event_cb(lv_event_t *e) {
         ui_load_scr_animation(ui, &ui->AudioList, ui->AudioList_del, &ui->Home_del, setup_scr_AudioList, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
     } else if (btn == bodys[GAME_BTN_ID].obj) {
         ui_load_scr_animation(ui, &ui->GameList, ui->GameList_del, &ui->Home_del, setup_scr_GameList, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
+    } else if (btn == bodys[CAMERA_BTN_ID].obj) {
+        camera_player_stop();
+        camera_player_play();
     }
 }
 
@@ -241,6 +246,8 @@ void home_screen_custom_setup(lv_ui *ui) {
     bodys[GAME_BTN_ID].type = LV_OBJ_TYPE_IMG;
     bodys[GAME_BTN_ID].info.img.src = &img_game;
 
+    bodys[CAMERA_BTN_ID].type = LV_OBJ_TYPE_IMG;
+    bodys[CAMERA_BTN_ID].info.img.src = &img_camera;
 
     // 初始化所有图标
     custom_bodys_init(ui, bodys, SCREEN_BODY_MAX);
@@ -257,4 +264,5 @@ void home_screen_custom_setup(lv_ui *ui) {
 
     lv_obj_add_event_cb(bodys[MUSIC_BTN_ID].obj, _screen_img_click_event_cb, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(bodys[GAME_BTN_ID].obj, _screen_img_click_event_cb, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(bodys[CAMERA_BTN_ID].obj, _screen_img_click_event_cb, LV_EVENT_ALL, ui);
 }

@@ -1,0 +1,10 @@
+dependencies:
+  idf:
+    version: '>=5.0.0'
+description: A memory based file system for embedded use.
+repository: git://github.com/jkent/ramfs.git
+repository_info:
+  commit_sha: 4ab0a106cd119d7420552c3a04bd10d088abf096
+  path: .
+url: https://github.com/jkent/ramfs
+version: 0.1.0

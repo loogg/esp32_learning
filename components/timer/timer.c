@@ -27,7 +27,7 @@ static void timer_task(void *param) {
 }
 
 int timer_init(void) {
-    if (xTaskCreate(timer_task, "timer_task", 4096, NULL, 10, &_tid) != pdPASS) {
+    if (xTaskCreateWithCaps(timer_task, "timer_task", 4096, NULL, 10, &_tid, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT) != pdPASS) {
         ESP_LOGE(LOG_LOCAL_TAG, "Create timer task failed");
         return -1;
     }
